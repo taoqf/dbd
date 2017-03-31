@@ -4,7 +4,7 @@
   "description": "database driver, especially for postgresql",
   "main": "./dist/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./dist/main.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/taoqf/dbd#readme",
   "dependencies": {
+    "log4js": "^1.1.1",
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.30.4"

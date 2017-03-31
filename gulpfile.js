@@ -1,18 +1,15 @@
-const packageJson = require('./package.json');
-
-const del = require('del');
 const gulp = require('gulp');
-const sequence = require('gulp-sequence');
-const ts = require('gulp-typescript');
 const gulpCopy = require('gulp-copy');
 
 const dest = './dist/';
 
-gulp.task('clean', function () {
+gulp.task('clean', () => {
+	const del = require('del');
 	return del([dest, './html/js/', './html/css/', './html/images/']);
 });
 
-gulp.task('compile-ts', function (cb) {
+gulp.task('compile-ts', (cb) => {
+	const ts = require('gulp-typescript');
 	const tsProject = ts.createProject('./tsconfig.json');
 	tsProject.options.module = 1;	// commonjs
 	// tsProject.options.outDir = dest;
@@ -21,7 +18,24 @@ gulp.task('compile-ts', function (cb) {
 		.pipe(gulp.dest(dest));
 });
 
-gulp.task('compile-ts-umd', function (cb) {
+gulp.task('watch', () => {
+	const ts = require('gulp-typescript');
+	const tsProject = ts.createProject('./tsconfig.json');
+	tsProject.options.module = 1;	// commonjs
+	// tsProject.options.outDir = dest;
+	return gulp.watch(['./typings/index.d.ts', './src/**/*.ts'], (file) => {
+		console.log('dddddd', file);
+		const tsProject = ts.createProject('./tsconfig.json');
+		tsProject.options.module = 1;	// commonjs
+		// tsProject.options.outDir = dest;
+		return gulp.src(['./typings/index.d.ts', file.path])
+			.pipe(tsProject())
+			.pipe(gulp.dest(dest));
+	});
+});
+
+gulp.task('compile-ts-umd', (cb) => {
+	const ts = require('gulp-typescript');
 	const tsProject = ts.createProject('./tsconfig.json');
 	tsProject.options.module = 3;	// umd
 	// tsProject.options.outDir = dest;
@@ -30,21 +44,23 @@ gulp.task('compile-ts-umd', function (cb) {
 		.pipe(gulp.dest(dest + 'umd/'));
 });
 
-gulp.task('copy-css', function () {
+gulp.task('copy-css', () => {
 	return gulp.src(['./html-d/css/**/*'])
 		.pipe(gulp.dest('./html/css/'));
 });
 
-gulp.task('copy-images', function () {
+gulp.task('copy-images', () => {
 	return gulp.src(['./html-d/images/**/*'])
 		.pipe(gulp.dest('./html/images/'));
 });
 
-gulp.task('default', function (cb) {
-	sequence('clean', 'compile-ts', 'webpack', 'copy-css', 'copy-images', cb);
+gulp.task('default', (cb) => {
+	const sequence = require('gulp-sequence');
+	// sequence('clean', 'compile-ts', 'webpack', 'copy-css', 'copy-images', cb);
+	return sequence('clean', 'compile-ts', cb);
 });
 
-gulp.task('webpack', function (cb) {
+gulp.task('webpack', (cb) => {
 	let dest = './html/js/';
 	const path = require('path');
 	const ws = require('webpack-stream');
@@ -54,7 +70,7 @@ gulp.task('webpack', function (cb) {
 	const wp = ws.webpack;
 	const commons = new wp.optimize.CommonsChunkPlugin({
 		name: 'fl',
-		minChunks: function (module, count) {
+		minChunks: (module, count) => {
 			// return count > 10 || /state-machine|nools-ts|@feidao[\/|\\]|feidao-\D/.test(module.request);
 			return /lodash-ts/.test(module.request);
 		}
@@ -116,14 +132,14 @@ gulp.task('webpack', function (cb) {
 		.pipe(gulp.dest(dest));
 });
 
-gulp.task('watch-ts', function (cb) {
+gulp.task('watch-ts', (cb) => {
 	return gulp.watch(['./src/**/*.ts'], ['compile-ts-umd']);
 });
 
 gulp.task('dev', ['compile-ts-umd', 'watch-ts', 'browser-sync']);
 
 // Static server
-gulp.task('browser-sync', function () {
+gulp.task('browser-sync', () => {
 	const browserSync = require('browser-sync').create();
 	browserSync.init({
 		files: ['./dist/umd/', './html-d/'],
@@ -132,12 +148,12 @@ gulp.task('browser-sync', function () {
 			directory: true
 		},
 		serveStatic: ['./'],
-		port:8000
+		port: 8000
 	});
 });
 
 // Static server
-gulp.task('test', function () {
+gulp.task('test', () => {
 	const browserSync = require('browser-sync').create();
 	browserSync.init({
 		files: ['./html/'],

@@ -1,0 +1,42 @@
+{
+  "name": "dbd",
+  "version": "1.0.0",
+  "description": "database driver, especially for postgresql",
+  "main": "./dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taoqf/dbd.git"
+  },
+  "author": "taoqf <tao_qiufeng@126.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taoqf/dbd/issues"
+  },
+  "homepage": "https://github.com/taoqf/dbd#readme",
+  "dependencies": {
+    "pg": "^6.1.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.30.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-es2015-classes": "^6.23.0",
+    "babel-plugin-transform-es2015-parameters": "^6.18.0",
+    "babel-plugin-transform-es5-property-mutators": "^6.8.0",
+    "babel-plugin-transform-jscript": "^6.8.0",
+    "babel-plugin-transform-regenerator": "^6.16.1",
+    "babel-preset-es2015": "^6.18.0",
+    "browser-sync": "^2.17.6",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-copy": "^1.0.0",
+    "gulp-sequence": "^0.4.6",
+    "gulp-typescript": "^3.1.6",
+    "gulp-uglyfly": "^1.4.2",
+    "typescript": "^2.3.0-dev.20170331",
+    "vinyl-named": "^1.1.0"
+  }
+}

@@ -24,7 +24,6 @@ gulp.task('watch', () => {
 	tsProject.options.module = 1;	// commonjs
 	// tsProject.options.outDir = dest;
 	return gulp.watch(['./typings/index.d.ts', './src/**/*.ts'], (file) => {
-		console.log('dddddd', file);
 		const tsProject = ts.createProject('./tsconfig.json');
 		tsProject.options.module = 1;	// commonjs
 		// tsProject.options.outDir = dest;

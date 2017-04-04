@@ -1,0 +1,85 @@
+[
+	{
+		"skip": true,
+		"name": "mysql",
+		"driver": {
+			"type": "mysql",
+			"host": "localhost",
+			"port": 3306,
+			"username": "test",
+			"password": "test",
+			"database": "test"
+		}
+	},
+	{
+		"skip": true,
+		"name": "mariadb",
+		"driver": {
+			"type": "mariadb",
+			"host": "localhost",
+			"port": 3307,
+			"username": "test",
+			"password": "test",
+			"database": "test"
+		}
+	},
+	{
+		"skip": true,
+		"name": "sqlite",
+		"driver": {
+			"type": "sqlite",
+			"storage": "temp/sqlitedb.db"
+		}
+	},
+	{
+		"skip": false,
+		"name": "postgres",
+		"driver": {
+			"type": "postgres",
+			"host": "localhost",
+			"port": 15432,
+			"username": "test",
+			"password": "test",
+			"database": "my_db"
+		},
+		"entities": [
+			"./dist/entity/*.js"
+		],
+		"autoSchemaSync": true
+	},
+	{
+		"skip": true,
+		"name": "mssql",
+		"driver": {
+			"type": "mssql",
+			"host": "192.168.1.10",
+			"username": "sa",
+			"password": "admin12345",
+			"database": "test"
+		}
+	},
+	{
+		"skip": true,
+		"name": "oracle",
+		"driver": {
+			"type": "oracle",
+			"host": "localhost",
+			"username": "system",
+			"password": "oracle",
+			"port": 1521,
+			"sid": "xe.oracle.docker"
+		}
+	},
+	{
+		"skip": true,
+		"disabledIfNotEnabledImplicitly": true,
+		"name": "mongodb",
+		"driver": {
+			"type": "mongodb",
+			"database": "test"
+		},
+		"logging": {
+			"logQueries": false
+		}
+	}
+]

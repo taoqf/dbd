@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/taoqf/dbd#readme",
   "dependencies": {
+    "@types/log4js": "^0.0.32",
     "@types/node": "^7.0.12",
     "log4js": "^1.1.1",
     "pg": "^6.1.0",

@@ -22,7 +22,7 @@ gulp.task('watch', () => {
 	tsProject.options.module = 1;	// commonjs
 	const outDir = tsProject.options.outDir;
 	const path = require('path');
-	return gulp.watch(['./typings/index.d.ts', './src/**/*.ts'], (file) => {
+	return gulp.watch(['./src/**/*.ts'], (file) => {
 		const tsProject = ts.createProject('./tsconfig.json');
 		tsProject.options.module = 1;	// commonjs
 		const relative = path.relative('./src/', path.dirname(file.path));
@@ -39,7 +39,7 @@ gulp.task('compile-ts-umd', (cb) => {
 	tsProject.options.module = 3;	// umd
 	const path = require('path');
 	const dest = path.join(tsProject.options.outDir, 'umd');
-	return gulp.src(['./typings/index.d.ts', './src/**/*.ts'])
+	return gulp.src(['./src/**/*.ts'])
 		.pipe(tsProject())
 		.pipe(gulp.dest(dest));
 });

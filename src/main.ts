@@ -260,15 +260,15 @@ async function test_16() {
 	await conn.close();
 }
 
-import Photo2 from './entity/photo2';
+// import Photo2 from './entity/photo2';
 
-async function test_17() {
-	const conn = await connect();
-	const pr = conn.getRepository(Photo2);
-	const photos = await pr.find();
-	console.log('lslslsls', photos);
-	await conn.close();
-}
+// async function test_17() {
+// 	const conn = await connect();
+// 	const pr = conn.getRepository(Photo2);
+// 	const photos = await pr.find();
+// 	console.log('lslslsls', photos);
+// 	await conn.close();
+// }
 
 import Author from './entity/author';
 
@@ -310,17 +310,155 @@ async function test_19() {
 
 async function test_20() {
 	const conn = await connect();
-	// const pr = conn.getRepository(Photo);
-	// const photo = await pr.findOne({
-	// 	alias: 'photo',
-	// 	innerJoinAndSelect: {
-	// 		'author': 'photo.author',
-	// 		'metadata': 'photo.metadata'
-	// 	}
-	// });
-	// photo.author.name = 'tqf';
-	// await pr.persist(photo);
-	// console.log('lslslsls', photo);
+	const photo = new Photo();
+	photo.name = "taoqf";
+	photo.description = "I am near polar bears";
+	photo.file_name = "dddddddddddddd";
+	photo.views = 1;
+	photo.is_published = true;
+	const metadata = new PhotoMetadata();
+	metadata.height = 640;
+	metadata.width = 480;
+	metadata.compressed = true;
+	metadata.comment = "cybershoot";
+	metadata.orientation = "portait";
+	metadata.photo = photo; // this way we connect them
+	const author = new Author();
+	author.name = 'my photo';
+	author.photos = [photo];
+	photo.author = author;
+	const pr = conn.getRepository(Photo);
+	const pmr = conn.getRepository(PhotoMetadata);
+	const ar = conn.getRepository(Author);
+	await ar.persist(author);
+	console.log('author saved:', author);
+	await pr.persist(photo);
+	console.log('photo saved:', photo);
+	await pmr.persist(metadata);
+	console.log('photometadata saved:', metadata);
+	await conn.close();
+}
+
+async function test_21() {
+	const conn = await connect();
+	const pr = conn.getRepository(Photo);
+	const pqb = await pr.createQueryBuilder('photo');
+	if (pqb) {
+		const qb = await pqb.innerJoinAndSelect('photo.metadata', 'metadata');
+		const sql = qb.getSql();
+		console.log('sql:', sql);
+		const photos = await qb.getMany();
+		console.log('photos', photos);
+	} else {
+		console.log('cannot build querybuilder.');
+	}
+	await conn.close();
+}
+
+async function test_22() {
+	const conn = await connect();
+	const pr = conn.getRepository(Photo);
+	const pqb = await pr.createQueryBuilder('photo');
+	if (pqb) {
+		const qb = await pqb.innerJoinAndSelect('photo.author', 'author');
+		const sql = qb.getSql();
+		console.log('sql:', sql);
+		const photos = await qb.getMany();
+		console.log('photos', photos);
+	} else {
+		console.log('cannot build querybuilder.');
+	}
+	await conn.close();
+}
+
+async function test_23() {
+	const conn = await connect();
+	const ar = conn.getRepository(Author);
+	const pqb = await ar.createQueryBuilder('author');
+	if (pqb) {
+		const qb = await pqb.innerJoinAndSelect('author.photos', 'photos');
+		const sql = qb.getSql();
+		console.log('sql:', sql);
+		const author = await qb.getMany();
+		console.log('author', JSON.stringify(author));
+	} else {
+		console.log('cannot build querybuilder.');
+	}
+	await conn.close();
+}
+
+import Album from './entity/album';
+
+async function test_24() {
+	const conn = await connect();
+	// 创建两个albums
+	const album1 = new Album();
+	album1.name = "Bears";
+
+	const album2 = new Album();
+	album2.name = "Me";
+
+	// 创建两个photos
+	const photo1 = new Photo();
+	photo1.name = "Me and Bears";
+	photo1.description = "I am near polar bears";
+	photo1.file_name = "photo-with-bears.jpg";
+	photo1.albums.push(album1);
+	photo1.views = 1;
+	photo1.is_published = true;
+
+	const photo2 = new Photo();
+	photo2.name = "Bears";
+	photo2.description = "I am near polar bears";
+	photo2.file_name = "photo-with-bears.jpg";
+	photo2.albums.push(album2);
+	photo2.views = 1;
+	photo2.is_published = false;
+
+	// 获取Photo的repository
+	const photoRepository = conn.getRepository(Photo);
+
+	// 依次存储photos，由于cascade，albums也同样会自动存起来
+	await photoRepository.persist(photo1);
+	await photoRepository.persist(photo2);
+
+	console.log("Both photos have been saved");
+	await conn.close();
+}
+
+async function test_25() {
+	const conn = await connect();
+	const pr = conn.getRepository(Photo);
+	const qb = pr.createQueryBuilder('photo');
+	if (qb) {
+		await qb.innerJoinAndSelect('photo.metadata', 'metadata')
+			.leftJoinAndSelect('photo.albums', 'albums')
+			.where('photo.is_published = true')
+			.andWhere(`(photo.name='My' or photo.name='Mishka')`)
+			.orderBy('photo.id', 'DESC')
+			.setFirstResult(1)
+			.setMaxResults(10);
+		console.log('sql:', qb.getSql())
+		const photos = await qb.getMany();
+		console.log('photos:', photos);
+	} else {
+		console.error('failed create query builder');
+	}
+	await conn.close();
+}
+
+async function test_26() {
+	const conn = await connect();
+	const pr = conn.getRepository(Photo);
+	await pr.transaction(async (r) => {
+		const photos = await r.find();
+		console.log('r photos', photos);
+	});
+	await conn.entityManager.transaction(async (e) => {
+		const r = e.getRepository(Photo);
+		const photos = await r.find();
+		console.log('e photos', photos);
+	});
 	await conn.close();
 }
 
@@ -331,7 +469,7 @@ async function test_xx() {
 
 async function main() {
 	log4js.configure('./log4js.json');
-	await test_19();
+	await test_26();
 	process.exit();
 }
 

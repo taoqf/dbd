@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, OneToOne, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, OneToOne, ManyToOne, ManyToMany } from 'typeorm';
 import PhotoMetadata from './photo-meta-data';
 import Author from './author';
+import Album from './album';
 
 @Entity()
 export default class Photo {
@@ -14,9 +15,7 @@ export default class Photo {
 	name: string;
 	@Column('text')
 	description: string;
-	@Column({
-		nullable: true
-	})
+	@Column()
 	file_name: string;
 	@Column('int')
 	views: number;
@@ -26,4 +25,10 @@ export default class Photo {
 	metadata: PhotoMetadata;
 	@ManyToOne(type => Author, author => author.photos, { cascadeAll: true })
 	author: Author;
+	@ManyToMany(type => Album, album => album.photos, {
+		cascadeInsert: true, // allow to insert a new album on photo save
+		cascadeUpdate: true, // allow to update an album on photo save
+		// cascadeRemove: true  // allow to remove an album on photo remove
+	})
+	albums: Album[] = []; // we initialize array for convinience here
 }

@@ -282,16 +282,14 @@ function test_16() {
         yield conn.close();
     });
 }
-const photo2_1 = require("./entity/photo2");
-function test_17() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const conn = yield connect();
-        const pr = conn.getRepository(photo2_1.default);
-        const photos = yield pr.find();
-        console.log('lslslsls', photos);
-        yield conn.close();
-    });
-}
+// import Photo2 from './entity/photo2';
+// async function test_17() {
+// 	const conn = await connect();
+// 	const pr = conn.getRepository(Photo2);
+// 	const photos = await pr.find();
+// 	console.log('lslslsls', photos);
+// 	await conn.close();
+// }
 const author_1 = require("./entity/author");
 function test_18() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -336,17 +334,158 @@ function test_19() {
 function test_20() {
     return __awaiter(this, void 0, void 0, function* () {
         const conn = yield connect();
-        // const pr = conn.getRepository(Photo);
-        // const photo = await pr.findOne({
-        // 	alias: 'photo',
-        // 	innerJoinAndSelect: {
-        // 		'author': 'photo.author',
-        // 		'metadata': 'photo.metadata'
-        // 	}
-        // });
-        // photo.author.name = 'tqf';
-        // await pr.persist(photo);
-        // console.log('lslslsls', photo);
+        const photo = new photo_1.default();
+        photo.name = "taoqf";
+        photo.description = "I am near polar bears";
+        photo.file_name = "dddddddddddddd";
+        photo.views = 1;
+        photo.is_published = true;
+        const metadata = new photo_meta_data_1.default();
+        metadata.height = 640;
+        metadata.width = 480;
+        metadata.compressed = true;
+        metadata.comment = "cybershoot";
+        metadata.orientation = "portait";
+        metadata.photo = photo; // this way we connect them
+        const author = new author_1.default();
+        author.name = 'my photo';
+        author.photos = [photo];
+        photo.author = author;
+        const pr = conn.getRepository(photo_1.default);
+        const pmr = conn.getRepository(photo_meta_data_1.default);
+        const ar = conn.getRepository(author_1.default);
+        yield ar.persist(author);
+        console.log('author saved:', author);
+        yield pr.persist(photo);
+        console.log('photo saved:', photo);
+        yield pmr.persist(metadata);
+        console.log('photometadata saved:', metadata);
+        yield conn.close();
+    });
+}
+function test_21() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        const pr = conn.getRepository(photo_1.default);
+        const pqb = yield pr.createQueryBuilder('photo');
+        if (pqb) {
+            const qb = yield pqb.innerJoinAndSelect('photo.metadata', 'metadata');
+            const sql = qb.getSql();
+            console.log('sql:', sql);
+            const photos = yield qb.getMany();
+            console.log('photos', photos);
+        }
+        else {
+            console.log('cannot build querybuilder.');
+        }
+        yield conn.close();
+    });
+}
+function test_22() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        const pr = conn.getRepository(photo_1.default);
+        const pqb = yield pr.createQueryBuilder('photo');
+        if (pqb) {
+            const qb = yield pqb.innerJoinAndSelect('photo.author', 'author');
+            const sql = qb.getSql();
+            console.log('sql:', sql);
+            const photos = yield qb.getMany();
+            console.log('photos', photos);
+        }
+        else {
+            console.log('cannot build querybuilder.');
+        }
+        yield conn.close();
+    });
+}
+function test_23() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        const ar = conn.getRepository(author_1.default);
+        const pqb = yield ar.createQueryBuilder('author');
+        if (pqb) {
+            const qb = yield pqb.innerJoinAndSelect('author.photos', 'photos');
+            const sql = qb.getSql();
+            console.log('sql:', sql);
+            const author = yield qb.getMany();
+            console.log('author', JSON.stringify(author));
+        }
+        else {
+            console.log('cannot build querybuilder.');
+        }
+        yield conn.close();
+    });
+}
+const album_1 = require("./entity/album");
+function test_24() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        // 创建两个albums
+        const album1 = new album_1.default();
+        album1.name = "Bears";
+        const album2 = new album_1.default();
+        album2.name = "Me";
+        // 创建两个photos
+        const photo1 = new photo_1.default();
+        photo1.name = "Me and Bears";
+        photo1.description = "I am near polar bears";
+        photo1.file_name = "photo-with-bears.jpg";
+        photo1.albums.push(album1);
+        photo1.views = 1;
+        photo1.is_published = true;
+        const photo2 = new photo_1.default();
+        photo2.name = "Bears";
+        photo2.description = "I am near polar bears";
+        photo2.file_name = "photo-with-bears.jpg";
+        photo2.albums.push(album2);
+        photo2.views = 1;
+        photo2.is_published = false;
+        // 获取Photo的repository
+        const photoRepository = conn.getRepository(photo_1.default);
+        // 依次存储photos，由于cascade，albums也同样会自动存起来
+        yield photoRepository.persist(photo1);
+        yield photoRepository.persist(photo2);
+        console.log("Both photos have been saved");
+        yield conn.close();
+    });
+}
+function test_25() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        const pr = conn.getRepository(photo_1.default);
+        const qb = pr.createQueryBuilder('photo');
+        if (qb) {
+            yield qb.innerJoinAndSelect('photo.metadata', 'metadata')
+                .leftJoinAndSelect('photo.albums', 'albums')
+                .where('photo.is_published = true')
+                .andWhere(`(photo.name='My' or photo.name='Mishka')`)
+                .orderBy('photo.id', 'DESC')
+                .setFirstResult(1)
+                .setMaxResults(10);
+            console.log('sql:', qb.getSql());
+            const photos = yield qb.getMany();
+            console.log('photos:', photos);
+        }
+        else {
+            console.error('failed create query builder');
+        }
+        yield conn.close();
+    });
+}
+function test_26() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const conn = yield connect();
+        const pr = conn.getRepository(photo_1.default);
+        yield pr.transaction((r) => __awaiter(this, void 0, void 0, function* () {
+            const photos = yield r.find();
+            console.log('r photos', photos);
+        }));
+        yield conn.entityManager.transaction((e) => __awaiter(this, void 0, void 0, function* () {
+            const r = e.getRepository(photo_1.default);
+            const photos = yield r.find();
+            console.log('e photos', photos);
+        }));
         yield conn.close();
     });
 }
@@ -359,7 +498,7 @@ function test_xx() {
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         log4js.configure('./log4js.json');
-        yield test_19();
+        yield test_26();
         process.exit();
     });
 }

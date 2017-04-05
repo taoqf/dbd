@@ -12,7 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const photo_meta_data_1 = require("./photo-meta-data");
 const author_1 = require("./author");
+const album_1 = require("./album");
 let Photo = class Photo {
+    constructor() {
+        this.albums = []; // we initialize array for convinience here
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn({
@@ -31,9 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], Photo.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column({
-        nullable: true
-    }),
+    typeorm_1.Column(),
     __metadata("design:type", String)
 ], Photo.prototype, "file_name", void 0);
 __decorate([
@@ -52,6 +54,13 @@ __decorate([
     typeorm_1.ManyToOne(type => author_1.default, author => author.photos, { cascadeAll: true }),
     __metadata("design:type", author_1.default)
 ], Photo.prototype, "author", void 0);
+__decorate([
+    typeorm_1.ManyToMany(type => album_1.default, album => album.photos, {
+        cascadeInsert: true,
+        cascadeUpdate: true,
+    }),
+    __metadata("design:type", Array)
+], Photo.prototype, "albums", void 0);
 Photo = __decorate([
     typeorm_1.Entity()
 ], Photo);

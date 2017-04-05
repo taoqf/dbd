@@ -1,19 +1,17 @@
 const gulp = require('gulp');
 const gulpCopy = require('gulp-copy');
 
-const dest = './dist/';
-
 gulp.task('clean', () => {
 	const del = require('del');
-	return del([dest, './html/js/', './html/css/', './html/images/']);
+	return del(['./dist/']);
 });
 
 gulp.task('compile-ts', (cb) => {
 	const ts = require('gulp-typescript');
 	const tsProject = ts.createProject('./tsconfig.json');
 	tsProject.options.module = 1;	// commonjs
-	// tsProject.options.outDir = dest;
-	return gulp.src(['./typings/index.d.ts', './src/**/*.ts'])
+	const dest = tsProject.options.outDir;
+	return tsProject.src()
 		.pipe(tsProject())
 		.pipe(gulp.dest(dest));
 });
@@ -22,13 +20,14 @@ gulp.task('watch', () => {
 	const ts = require('gulp-typescript');
 	const tsProject = ts.createProject('./tsconfig.json');
 	tsProject.options.module = 1;	// commonjs
-	// tsProject.options.outDir = dest;
+	const outDir = tsProject.options.outDir;
+	const path = require('path');
 	return gulp.watch(['./typings/index.d.ts', './src/**/*.ts'], (file) => {
-		console.log('dddddd', file);
 		const tsProject = ts.createProject('./tsconfig.json');
 		tsProject.options.module = 1;	// commonjs
-		// tsProject.options.outDir = dest;
-		return gulp.src(['./typings/index.d.ts', file.path])
+		const relative = path.relative('./src/', path.dirname(file.path));
+		const dest = path.join(outDir, relative);
+		return gulp.src([file.path])
 			.pipe(tsProject())
 			.pipe(gulp.dest(dest));
 	});
@@ -38,10 +37,11 @@ gulp.task('compile-ts-umd', (cb) => {
 	const ts = require('gulp-typescript');
 	const tsProject = ts.createProject('./tsconfig.json');
 	tsProject.options.module = 3;	// umd
-	// tsProject.options.outDir = dest;
+	const path = require('path');
+	const dest = path.join(tsProject.options.outDir, 'umd');
 	return gulp.src(['./typings/index.d.ts', './src/**/*.ts'])
 		.pipe(tsProject())
-		.pipe(gulp.dest(dest + 'umd/'));
+		.pipe(gulp.dest(dest));
 });
 
 gulp.task('copy-css', () => {

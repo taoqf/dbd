@@ -1,17 +1,5 @@
 {
-	"name": "dbd",
-	"dependencies": {
-		"bluebird": "registry:dt/bluebird#3.5.0+20170323165310",
-		"express": "registry:dt/express#4.0.0+20170118060322",
-		"express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20170324160323",
-		"lodash": "registry:dt/lodash#4.14.0+20170324155812",
-		"log4js": "registry:dt/log4js#0.0.0+20160726182927",
-		"mime": "registry:dt/mime#0.0.0+20160428043022",
-		"sequelize": "registry:dt/sequelize#4.0.0+20170322194850",
-		"serve-static": "registry:dt/serve-static#1.7.1+20161128184045",
-		"validatorjs": "registry:dt/validatorjs#3.7.0+20161110161159"
-	},
-	"globalDependencies": {
-		"node": "registry:dt/node#7.0.0+20170322231424"
-	}
+  "globalDependencies": {
+    "reflect-metadata": "registry:dt/reflect-metadata#0.0.0+20161005184000"
+  }
 }

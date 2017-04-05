@@ -9,9 +9,7 @@
 		"strictNullChecks": true,
 		"noImplicitThis": true,
 		"rootDir": "./src/",
-		"rootDirs": [
-
-		],
+		"rootDirs": [],
 		"allowJs": false,
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
@@ -33,7 +31,7 @@
 			"es7",
 			"dom"
 		],
-		"listFiles": true,	// default false
+		"listFiles": true, // default false
 		"listEmittedFiles": true, // default false
 		"locale": "zh_CN",
 		"newLine": "CRLF",
@@ -51,25 +49,19 @@
 		"noResolve": false,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"paths": {
-
-		},
+		"paths": {},
 		"preserveConstEnums": false,
 		"pretty": true,
 		// "mapRoot": "",
 		"removeComments": false,
-		"skipDefaultLibCheck": true,	// default false
-		"skipLibCheck": true,	// default false
+		"skipDefaultLibCheck": true, // default false
+		"skipLibCheck": true, // default false
 		"stripInternal": false,
 		"suppressExcessPropertyErrors": false,
-		"suppressImplicitAnyIndexErrors": true,	// default false
-		"traceResolution": true,	// default false
-		"typeRoots": [
-
-		],
-		"types": [
-
-		],
+		"suppressImplicitAnyIndexErrors": true, // default false
+		"traceResolution": true, // default false
+		"typeRoots": [],
+		"types": [],
 		"watch": false
 	}
 }

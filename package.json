@@ -17,10 +17,13 @@
   },
   "homepage": "https://github.com/taoqf/dbd#readme",
   "dependencies": {
+    "@types/log4js": "^0.0.32",
+    "@types/node": "^7.0.12",
     "log4js": "^1.1.1",
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^3.30.4"
+    "reflect-metadata": "^0.1.10",
+    "typeorm": "^0.0.11"
   },
   "devDependencies": {
     "babel-plugin-transform-es2015-classes": "^6.23.0",
@@ -37,6 +40,7 @@
     "gulp-sequence": "^0.4.6",
     "gulp-typescript": "^3.1.6",
     "gulp-uglyfly": "^1.4.2",
+    "gulpclass": "^0.1.2",
     "typescript": "^2.3.0-dev.20170331",
     "vinyl-named": "^1.1.0"
   }

@@ -9,7 +9,6 @@ async function connect() {
 }
 
 async function test1() {
-	console.log(1111);
 	const conn = await connect();
 	function add() {
 		const user = new User();

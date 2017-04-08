@@ -18,14 +18,12 @@ gulp.task('compile-ts', (cb) => {
 
 gulp.task('watch', () => {
 	const ts = require('gulp-typescript');
-	const tsProject = ts.createProject('./tsconfig.json');
-	tsProject.options.module = 1;	// commonjs
-	const outDir = tsProject.options.outDir;
 	const path = require('path');
 	return gulp.watch(['./src/**/*.ts'], (file) => {
 		const tsProject = ts.createProject('./tsconfig.json');
 		tsProject.options.module = 1;	// commonjs
 		const relative = path.relative('./src/', path.dirname(file.path));
+		const outDir = tsProject.options.outDir;
 		const dest = path.join(outDir, relative);
 		return gulp.src([file.path])
 			.pipe(tsProject())

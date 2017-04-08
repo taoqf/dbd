@@ -20,7 +20,6 @@ function connect() {
 }
 function test1() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(1111);
         const conn = yield connect();
         function add() {
             const user = new user_1.default();

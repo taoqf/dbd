@@ -40,8 +40,7 @@
     "gulp-sequence": "^0.4.6",
     "gulp-typescript": "^3.1.6",
     "gulp-uglyfly": "^1.4.2",
-    "gulpclass": "^0.1.2",
-    "typescript": "^2.3.0-dev.20170331",
+    "typescript": "next",
     "vinyl-named": "^1.1.0"
   }
 }
